@@ -1,0 +1,48 @@
+cc_library_shared {
+    name: "hwcomposer.filegroups_build_test",
+    defaults: ["hwcomposer.drm_defaults"],
+
+    srcs: [
+        ":drm_hwcomposer_common",
+        ":drm_hwcomposer_platformhisi",
+        ":drm_hwcomposer_platformimagination",
+        ":drm_hwcomposer_platformmediatek",
+        ":drm_hwcomposer_platformmeson",
+    ],
+
+    local_include_dirs: [
+        "test_include",
+    ],
+
+    cppflags: [
+        "-DDISABLE_LEGACY_GETTERS",
+    ],
+}
+
+cc_test {
+    name: "hwc-drm-tests-rk",
+
+    srcs: ["worker_test.cpp"],
+
+    vendor: true,
+    header_libs: [
+        "drm_hwcomposer_headers",
+        "libhardware_headers",
+    ],
+    static_libs: ["libdrmhwc_utils"],
+    shared_libs: ["hwcomposer.drm"],
+}
+
+// Tool for listening and dumping uevents
+cc_test {
+    name: "hwc-drm-uevent-print",
+
+    srcs: ["uevent_print.cpp"],
+
+    vendor: true,
+    header_libs: [
+        "drm_hwcomposer_headers",
+        "libhardware_headers",
+    ],
+    shared_libs: ["liblog"],
+}
