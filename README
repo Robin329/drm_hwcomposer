@@ -1,1 +1,118 @@
-1. Drm HWC流程分析
+# 1. 文件目录结构
+.
+├── Android.bp
+├── backend
+│   ├── BackendClient.cpp
+│   ├── BackendClient.h
+│   ├── Backend.cpp
+│   ├── Backend.h
+│   ├── BackendManager.cpp
+│   └── BackendManager.h
+├── bufferinfo
+│   ├── BufferInfoGetter.cpp
+│   ├── BufferInfoGetter.h
+│   ├── BufferInfo.h
+│   ├── BufferInfoMapperMetadata.cpp
+│   ├── BufferInfoMapperMetadata.h
+│   └── legacy
+│       ├── BufferInfoImagination.cpp
+│       ├── BufferInfoImagination.h
+│       ├── BufferInfoLibdrm.cpp
+│       ├── BufferInfoLibdrm.h
+│       ├── BufferInfoMaliHisi.cpp
+│       ├── BufferInfoMaliHisi.h
+│       ├── BufferInfoMaliMediatek.cpp
+│       ├── BufferInfoMaliMediatek.h
+│       ├── BufferInfoMaliMeson.cpp
+│       ├── BufferInfoMaliMeson.h
+│       ├── BufferInfoMinigbm.cpp
+│       └── BufferInfoMinigbm.h
+├── build_deploy.sh
+├── compositor
+│   ├── DrmKmsPlan.cpp
+│   ├── DrmKmsPlan.h // drm kms
+│   └── LayerData.h
+├── drm
+│   ├── DrmAtomicStateManager.cpp
+│   ├── DrmAtomicStateManager.h // hec status manager
+│   ├── DrmConnector.cpp
+│   ├── DrmConnector.h // drm connectors
+│   ├── DrmCrtc.cpp
+│   ├── DrmCrtc.h // drm crtcs
+│   ├── DrmDevice.cpp
+│   ├── DrmDevice.h   // drm device(get name, crtcs, connectors planes, encoders)
+│   ├── DrmDisplayPipeline.cpp
+│   ├── DrmDisplayPipeline.h // display pipeline
+│   ├── DrmEncoder.cpp
+│   ├── DrmEncoder.h  // drm encoder
+│   ├── DrmFbImporter.cpp
+│   ├── DrmFbImporter.h // fb id manager
+│   ├── DrmMode.cpp
+│   ├── DrmMode.h // drm mode
+│   ├── DrmPlane.cpp
+│   ├── DrmPlane.h // Drm plane
+│   ├── DrmProperty.cpp
+│   ├── DrmProperty.h // drm property
+│   ├── DrmUnique.h  // hwc内存管理
+│   ├── ResourceManager.cpp
+│   ├── ResourceManager.h // 显示资源管理
+│   ├── UEventListener.cpp
+│   ├── UEventListener.h // 监听热插拔事件
+│   ├── VSyncWorker.cpp
+│   └── VSyncWorker.h // 控制Vsync
+├── hwc2_device -------------->>主要是device相关的配置
+│   ├── DrmHwcTwo.cpp
+│   ├── DrmHwcTwo.h
+│   ├── hwc2_device.cpp // hwc2 hal的接口配置
+│   ├── HwcDisplayConfigs.cpp
+│   ├── HwcDisplayConfigs.h // 显示配置相关
+│   ├── HwcDisplay.cpp
+│   ├── HwcDisplay.h // 显示参数设置或获取(创建Layer，设置Colormode，Powermode，获取配置信息)
+│   ├── HwcLayer.cpp
+│   └── HwcLayer.h // 对Layer相关的操作
+├── MODULE_LICENSE_APACHE2
+├── NOTICE
+├── presubmit.sh
+├── README
+├── README.md
+├── tests
+│   ├── Android.bp
+│   ├── test_include
+│   │   ├── gralloc_helper.h
+│   │   ├── gralloc_priv.h
+│   │   ├── img_gralloc1_public.h
+│   │   ├── mali_gralloc_buffer.h
+│   │   ├── mali_gralloc_formats.h
+│   │   ├── mali_gralloc_private_interface_types.h
+│   │   └── mali_gralloc_usages.h
+│   ├── uevent_print.cpp
+│   └── worker_test.cpp
+└── utils
+    ├── log.h
+    ├── properties.h // properties get/set
+    ├── UEvent.h     // UEvent
+    ├── UniqueFd.h
+    ├── Worker.cpp
+    └── Worker.h
+
+9 directories, 85 files
+
+
+# 2. Work Flow
+    Worker::InternalRoutine()
+        VSyncWorker::Routine()
+            drmWaitVBlank()
+            SyntheticWaitVBlank()
+            callback_()
+
+
+    HwcDisplay::Init()
+        ChosePreferredConfig()
+        VSyncWorker::Init()
+            //Register callback_
+            InitWorker()
+                InternalRoutine()
+                    Routine()
+        GetDisplayVsyncPeriod()
+        hwc2_->SendVsyncEventToClient()
+        SetLayerBlendMode()
