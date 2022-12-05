@@ -99,13 +99,14 @@
 
 
 # 2. Work Flow
+// Worker
     Worker::InternalRoutine()
         VSyncWorker::Routine()
             drmWaitVBlank()
             SyntheticWaitVBlank()
             callback_()
 
-
+// HwcDisplay
     HwcDisplay::Init()
         ChosePreferredConfig()
         VSyncWorker::Init()
@@ -116,3 +117,22 @@
         GetDisplayVsyncPeriod()
         hwc2_->SendVsyncEventToClient()
         SetLayerBlendMode()
+
+// Drm device
+    DrmDevice::Init()
+
+
+
+// ResourceManager
+    ResourceManager::Init()
+
+
+// DRM Plane
+    DrmPlane::Init()
+
+// DRM propertie
+    DrmProperty::Init()
+
+// Drm hwc two
+DrmHwcTwo::RegisterCallback()
+    ResourceManager::Init()

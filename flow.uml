@@ -1,0 +1,7 @@
+@startuml
+
+SurfaceFlinger->"Worker":
+
+"Worker"->"Drm device":
+
+@enduml
