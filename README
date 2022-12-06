@@ -134,5 +134,48 @@
     DrmProperty::Init()
 
 // Drm hwc two
+
+
+
+
+DrmHwcTwo::HookDevOpen()
+    DrmHwcTwo::Init()
+        ResourceManager::Init()
+        CreateDisplay()
+            DrmHwcTwo::HwcDisplay::Init()
+                VSyncWorker::Init()
+                SetBackendForDisplay()
+                DrmHwcTwo::HwcDisplay::ChosePreferredConfig()
+        RegisterHotplugHandler()
+
+--->>
+DrmHwcTwo::HwcDisplay::SetClientTarget()
+    BufferInfoGetter::GetInstance()->ConvertBoInfo()
+--->>
+DrmHwcTwo::HwcDisplay::PresentDisplay()
+    DrmHwcTwo::HwcDisplay::CreateComposition()
+        PopulateDrmLayer()
+        DrmHwcLayer::ImportBuffer()
+            BufferInfoGetter::GetInstance()->ConvertBoInfo()
+            DrmFbImporter::GetOrCreateFbId()
+                drmPrimeFDToHandle()
+                DrmFbIdHandle::CreateInstance()
+        AddPlaneDisable() // disable unuser plane
+
+
+
+
+
+--->>
 DrmHwcTwo::RegisterCallback()
     ResourceManager::Init()
+    Hotplug:
+        SetHotplugCallback()
+    Refresh:
+        RegisterRefreshCallback()
+    Vsync:
+        RegisterVsyncCallback()
+
+--->>
+DrmHwcTwo::HwcDisplay::SetVsyncEnabled()
+    VSyncControl()
