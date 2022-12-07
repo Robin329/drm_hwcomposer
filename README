@@ -185,3 +185,16 @@ DrmHwcTwo::RegisterCallback()
 --->>
 DrmHwcTwo::HwcDisplay::SetVsyncEnabled()
     VSyncControl()
+
+
+
+---->>
+RenderThread::threadLoop()
+    RenderThread::initThreadLocals()
+        RenderThread::initializeChoreographer()
+
+    onVsync() //HWComposer.cpp
+        SurfaceFlinger::onVsyncReceived()
+            HWComposer::onVsync()
+
+                DisplayEventReceiver::AttachedEvent::handleEvent()
