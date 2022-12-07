@@ -105,18 +105,24 @@
             drmWaitVBlank()
             SyntheticWaitVBlank()
             callback_()
-
+-----------------------------------------------------------------
 // HwcDisplay
     HwcDisplay::Init()
         ChosePreferredConfig()
         VSyncWorker::Init()
             //Register callback_
             InitWorker()
-                InternalRoutine()
-                    Routine()
+                Worker::InternalRoutine()
+                    VSyncWorker::Routine()
+                        drmWaitVBlank()
+                        SyntheticWaitVBlank()
+                        callback_() // compositor callback->DrmDisplayCompositor::Vsync()
+                        vsync_callback_hook_() // upper callback
         GetDisplayVsyncPeriod()
         hwc2_->SendVsyncEventToClient()
         SetLayerBlendMode()
+-----------------------------------------------------------------
+
 
 // Drm device
     DrmDevice::Init()
