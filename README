@@ -125,12 +125,7 @@
 
 
 // Drm device
-    DrmDevice::Init()
 
-
-
-// ResourceManager
-    ResourceManager::Init()
 
 
 // DRM Plane
@@ -146,7 +141,14 @@
 
 DrmHwcTwo::HookDevOpen()
     DrmHwcTwo::Init()
-        ResourceManager::Init()
+        ResourceManager::Init() // ResourceManager
+            ResourceManager::AddDrmDevice()
+                DrmDevice::Init() // /dev/dri/card%
+                    DrmCrtc::Init()
+                    DrmConnector::Init()
+                    DrmPlane::Init()
+                    DrmEventListener::Init()
+
         CreateDisplay()
             DrmHwcTwo::HwcDisplay::Init()
                 VSyncWorker::Init()
