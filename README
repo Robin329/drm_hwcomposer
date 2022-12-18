@@ -156,7 +156,12 @@ DrmHwcTwo::HookDevOpen()
 
 --->>
 DrmHwcTwo::HwcDisplay::SetClientTarget()
+    set_buffer()
+    UniqueFd()
+    DrmHwcTwo::HwcLayer::SetLayerDataspace()
     BufferInfoGetter::GetInstance()->ConvertBoInfo()
+    DrmHwcTwo::HwcLayer::SetLayerSourceCrop()
+
 --->>
 DrmHwcTwo::HwcDisplay::PresentDisplay()
     DrmHwcTwo::HwcDisplay::CreateComposition()
@@ -187,6 +192,37 @@ DrmHwcTwo::HwcDisplay::SetVsyncEnabled()
     VSyncControl()
 
 
+
+-->>
+DrmHwcTwo::HwcDisplay::CreateComposition()
+    DrmDisplayCompositor::ApplyComposition()
+        DrmDisplayCompositor::ApplyFrame()
+            DrmDisplayCompositor::CommitFrame()
+
+
+-->>
+DrmHwcTwo::HwcDisplay::SetActiveConfig()
+    DrmDisplayCompositor::ApplyComposition()
+        DrmDisplayCompositor::ApplyFrame()
+            DrmDisplayCompositor::CommitFrame()
+
+
+-->>
+DrmHwcTwo::HwcDisplay::ValidateDisplay()
+    Backend::ValidateDisplay()
+        MarkValidated()
+    DrmHwcTwo::HwcDisplay::CreateComposition()
+            PopulateDrmLayer()
+            DrmHwcLayer::ImportBuffer()
+                BufferInfoGetter::GetInstance()->ConvertBoInfo()
+                DrmFbImporter::GetOrCreateFbId()
+                    drmPrimeFDToHandle()
+                    DrmFbIdHandle::CreateInstance()
+            SetLayers()
+            AddPlaneDisable() // disable unuser plane
+            ApplyComposition()
+            AddFenceToPresentFence()
+                UniqueFd()
 
 ---->>
 RenderThread::threadLoop()
